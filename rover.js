@@ -11,19 +11,25 @@ class Rover {
       }
   
       const results = [];
-  
-      for (let i = 0; i < message.commands.length ; i++) {
+      let isLowPower = false;
+      for (let i = 0; i < message.commands.length; i++) {
          const command = message.commands[i];
          const commandType = command.commandType;
          const commandValue = command.value;
-         if (['MOVE', 'MODE_CHANGE'].includes(commandType)) {
-            if('MODE_CHANGE' === commandType && commandValue === 'LOW_POWER') {
+         if ('MODE_CHANGE' === commandType && commandValue === 'LOW_POWER') {
+            this.mode = 'LOW_POWER';
+            isLowPower = true;
+            results.push({ completed: true });
+         }
+         if ('MOVE' === commandType) {
+            if (!isLowPower) {
+               this.position = commandValue;
+               results.push({ completed: true });
+            } else {
                results.push({ completed: false });
             }
-            else {
-            results.push({ completed: true });
-            }
-         } else if (commandType === 'STATUS_CHECK') {
+         }
+         if (commandType === 'STATUS_CHECK') {
             results.push({
                completed: true,
                roverStatus: { mode: this.mode, generatorWatts: this.generatorWatts, position: this.position }

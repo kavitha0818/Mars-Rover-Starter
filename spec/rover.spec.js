@@ -23,7 +23,7 @@ test("response returned by receiveMessage contains the name of the message", fun
 });
 
 test("response returned by receiveMessage includes two results if two commands are sent in the message", function() {
-  const commands = [new Command('MODE_CHANGE'), new Command('MOVE')];
+  const commands = [new Command('MOVE',100), new Command('MOVE',200)];
   const message = new Message('Calling Rover',commands);
   const rover = new Rover(98382);
   expect(rover.receiveMessage(message).results).toHaveLength(2);
@@ -39,7 +39,7 @@ test("responds correctly to the status check command", function() {
 });
 
 test("responds correctly to the mode change command", function() {
-  const commands = [new Command('MODE_CHANGE', 'NORMAL')];
+  const commands = [new Command('MODE_CHANGE', 'LOW_POWER')];
   const message = new Message('message', commands);
   const rover = new Rover(98382);
   const response = rover.receiveMessage(message);
@@ -47,20 +47,20 @@ test("responds correctly to the mode change command", function() {
 });
 
 test("responds with a false completed value when attempting to move in LOW_POWER mode", function() {
-    const commands = [new Command('MODE_CHANGE', 'LOW_POWER'), new Command('MOVE', 100)];
+    const commands = [new Command('MODE_CHANGE', 'LOW_POWER'), new Command('MOVE', 1000)];
     const message = new Message('Test message', commands);
     const rover = new Rover(100);
     const response = rover.receiveMessage(message);
-    expect(response.results[0].completed).toEqual(false);
+    expect(response.results[1].completed).toEqual(false);
     expect(rover.position).toEqual(100); 
   })
 test("responds with the position for the move command", function() {
  const commands = [new Command('MOVE', 100)];
   const message = new Message('Test message', commands);
-  const rover = new Rover(98382);
+  const rover = new Rover(100);
   const response = rover.receiveMessage(message);
   expect(response.results[0].completed).toEqual(true);
-  expect(rover.position).toEqual(98382);
+  expect(rover.position).toEqual(100);
 
 });
 });
