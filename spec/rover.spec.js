@@ -44,6 +44,7 @@ test("responds correctly to the mode change command", function() {
   const rover = new Rover(98382);
   const response = rover.receiveMessage(message);
   expect(response.results[0].completed).toEqual(true);
+  expect(rover.mode).toEqual('LOW_POWER');
 });
 
 test("responds with a false completed value when attempting to move in LOW_POWER mode", function() {
